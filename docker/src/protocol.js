@@ -1,4 +1,4 @@
-exports.port = 2112;
+exports.port = 2205;
 exports.multicast_address = "239.255.22.5";
 exports.playTimer = 1000;
 
