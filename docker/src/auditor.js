@@ -6,17 +6,19 @@ const dgram = require('dgram');
 // Import protocol
 const protocol = require('./protocol.js');
 
+var net = require('net');
+
 // Creating a datagram socket
-const server = dgram.createSocket('udp4');
-server.bind(protocol.port, function() {
+const serverUDP = dgram.createSocket('udp4');
+serverUDP.bind(protocol.port, function() {
     console.log("Joining multicast group");
-    server.addMembership(protocol.multicast_address);
+    serverUDP.addMembership(protocol.multicast_address);
 });
 
 var uuids = [];
 
 function checkMusicians() {
-    server.on('message', function(msg) {
+    serverUDP.on('message', function(msg) {
         message = JSON.parse(msg);
         if(firstTimeSeeingUUID(message.uuid)) {
             console.log(message.uuid);
@@ -43,3 +45,15 @@ function firstTimeSeeingUUID(uuid) {
 function getKeyByValue(object, value) {
     return Object.keys(object).find(key => object[key] === value);
 }
+
+// let's create a TCP server
+var serverTCP = net.createServer();
+
+// we are ready, so let's ask the server to start listening on port 9907
+serverTCP.listen(2205);
+
+serverTCP.on('connection', function(socket) {
+    socket.write("test");
+    socket.end();
+});
+
