@@ -18,7 +18,9 @@ const server = dgram.createSocket('udp4');
 console.log("Starting musician...")
 var instrument = process.argv[2];
 
-if(protocol.instruments.has(instrument)) {
+if(protocol.instruments[instrument]) {
+
+//if(protocol.instruments2.has(instrument)) {
     setInterval(play, protocol.playTimer);
 } else {
     console.log("Unknown instrument!")
@@ -27,7 +29,7 @@ if(protocol.instruments.has(instrument)) {
 function play() {
     var musician = {
         uuid: uuidv4,
-        sound: protocol.instruments.get(instrument)
+        sound: protocol.instruments[instrument]
     };
 
     const payload = JSON.stringify(musician);
