@@ -104,15 +104,15 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | --- | --- |
 |Question | How can we represent the system in an **architecture diagram**, which gives information both about the Docker containers, the communication protocols and the commands? |
-| | *Insert your diagram here...* |
+| | *Insert your diagram here...* TODO |
 |Question | Who is going to **send UDP datagrams** and **when**? |
-| | *Enter your response here...* |
+| | UDP datagrams are sent by the musicians, once every second as long as they're active. |
 |Question | Who is going to **listen for UDP datagrams** and what should happen when a datagram is received? |
-| | *Enter your response here...* |
+| | The auditors are listening for UDP datagrams and keeping track of the active musicians. They also let us know what they heard. |
 |Question | What **payload** should we put in the UDP datagrams? |
-| | *Enter your response here...* |
+| | The datagrams sent by the musicians will contain their UUID and the sound they emit. |
 |Question | What **data structures** do we need in the UDP sender and receiver? When will we update these data structures? When will we query these data structures? |
-| | *Enter your response here...* |
+| | We need to convert instruments to sounds and the opposite, for that we will use two maps, one musician-sided and one auditor-sided. Additionally we plan on creating a "Musician" object on the auditor side that will keep track of the UUID, the instrument and the first time he was heard. We will store the objects in an Array. |
 
 
 ## Task 2: implement a "musician" Node.js application
@@ -120,21 +120,21 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | In a JavaScript program, if we have an object, how can we **serialize it in JSON**? |
-| | *Enter your response here...*  |
+| | Thanks to the awesome `JSON.stringify()` method [see here](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/JSON/stringify) |
 |Question | What is **npm**?  |
-| | *Enter your response here...*  |
+|  | It's a packet manager for Javascript, it's the default one for any Node environment |
 |Question | What is the `npm install` command and what is the purpose of the `--save` flag?  |
-| | *Enter your response here...*  |
+| | It'll save the specified package into dependencies, but it's the default behavior now [source](https://docs.npmjs.com/cli/install) |
 |Question | How can we use the `https://www.npmjs.com/` web site?  |
-| | *Enter your response here...*  |
+| | It's a package database for anything `npm` related but also provides a lot of documentation on it |
 |Question | In JavaScript, how can we **generate a UUID** compliant with RFC4122? |
-| | *Enter your response here...*  |
+| | We're going to use https://github.com/uuidjs/uuid (in its 4th version) to generate a compliant UUID |
 |Question | In Node.js, how can we execute a function on a **periodic** basis? |
-| | *Enter your response here...*  |
+| | We will use `setInterval()` to avoid importing `cron` or `schedule` that are overkill for our needs. |
 |Question | In Node.js, how can we **emit UDP datagrams**? |
-| | *Enter your response here...*  |
+| | We can use `dgram` sockets to emit them, see [here](https://nodejs.org/api/dgram.html#dgram_udp_datagram_sockets) |
 |Question | In Node.js, how can we **access the command line arguments**? |
-| | *Enter your response here...*  |
+| | They are stored in an array called `process.argv` |
 
 
 ## Task 3: package the "musician" app in a Docker image
