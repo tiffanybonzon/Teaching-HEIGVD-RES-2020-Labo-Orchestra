@@ -4,6 +4,7 @@ exports.multicast_address = "239.255.22.5";
 exports.tcp_port = 2205;
 
 exports.playTimer = 1000;
+exports.deathTimer = 5000;
 
 exports.instruments = new Map();
 exports.instruments["piano"] = "ti-ta-ti";

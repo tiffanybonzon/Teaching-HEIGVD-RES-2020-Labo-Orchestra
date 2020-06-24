@@ -8,6 +8,8 @@ const protocol = require('./protocol.js');
 
 var net = require('net');
 
+var moment = require('moment');
+
 // Creating a datagram socket
 const serverUDP = dgram.createSocket('udp4');
 serverUDP.bind(protocol.udp_port, function() {
@@ -15,36 +17,35 @@ serverUDP.bind(protocol.udp_port, function() {
     serverUDP.addMembership(protocol.multicast_address);
 });
 
-var uuids = new Map();
-var musicians = [];
+var musicians = new Map();
 
 function checkMusicians() {
     serverUDP.on('message', function(msg) {
         message = JSON.parse(msg);
-        if(firstTimeSeeingUUID(message.uuid)) {
-            var musician = {
-                uuid: message.uuid,
-                instrument: getKeyByValue(protocol.instruments, message.sound.toString()),
-                activeSince: new Date()
-            };
+
+        checkUUID(message);
+
         
-            musicians.push(musician);
-        }
         
     });
 }
 
 setInterval(checkMusicians, protocol.playTimer);
+setInterval(checkAliveMusicians, protocol.deathTimer);
 
-function firstTimeSeeingUUID(uuid) {
-    var lastSeen = new Date();
-    if(uuids.has(uuid)) {
-        uuids[uuid] = lastSeen;
-        return false;
+function checkUUID(message) {
+    if(musicians.has(message.uuid)) {
+        musicians.delete(message.uuid);
     }
 
-    uuids.set(uuid, lastSeen);
-    return true;
+    var musician = {
+        uuid: message.uuid,
+        instrument: getKeyByValue(protocol.instruments, message.sound.toString()),
+        activeSince: new Date(),
+        lastHeard: new Date()
+    };
+
+    musicians.set(message.uuid, musician);
 }
 
 // FROM: https://stackoverflow.com/a/28191966/5119024
@@ -59,13 +60,28 @@ var serverTCP = net.createServer();
 serverTCP.listen(protocol.tcp_port);
 
 serverTCP.on('connection', function(socket) {
-    check_alive_musicians();
+    checkAliveMusicians();
+    var msg = [];
 
-    socket.write(JSON.stringify(musicians));
+    musicians.forEach(element => {
+        msg.push({
+            uuid: element.uuid,
+            instrument: element.instrument,
+            activeSince: element.activeSince
+        });
+    });
+
+    socket.write(JSON.stringify(msg));
 
     socket.end();
 });
 
-function check_alive_musicians() {
-    return true;
+function checkAliveMusicians() {
+    musicians.forEach(element => {
+        
+        if(moment().diff(element.lastHeard, "milliseconds") > protocol.deathTimer) {
+            musicians.delete(element.uuid);
+        }
+
+    });
 }
