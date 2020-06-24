@@ -8,7 +8,9 @@ const protocol = require('./protocol.js');
 
 var net = require('net');
 
-var moment = require('moment');
+var moment = require('moment'); //Pour coparer les temps facilement
+
+var musicians = new Map(); // COntient les musiciens actifs
 
 // Creating a datagram socket
 const serverUDP = dgram.createSocket('udp4');
@@ -17,23 +19,17 @@ serverUDP.bind(protocol.udp_port, function() {
     serverUDP.addMembership(protocol.multicast_address);
 });
 
-var musicians = new Map();
 
+// s.on dans une fonction car je sias pas comment timer sinon...
 function checkMusicians() {
     serverUDP.on('message', function(msg) {
         message = JSON.parse(msg);
-
         checkUUID(message);
-
-        
-        
     });
 }
 
-setInterval(checkMusicians, protocol.playTimer);
-setInterval(checkAliveMusicians, protocol.deathTimer);
-
 function checkUUID(message) {
+    //Surement qu'il serait mieux d'update lastHeard plutot que de tej et recréer à chaque fois...
     if(musicians.has(message.uuid)) {
         musicians.delete(message.uuid);
     }
@@ -46,6 +42,14 @@ function checkUUID(message) {
     };
 
     musicians.set(message.uuid, musician);
+}
+
+function checkAliveMusicians() {
+    musicians.forEach(element => {
+        if(moment().diff(element.lastHeard, "milliseconds") > protocol.deathTimer) {
+            musicians.delete(element.uuid);
+        }
+    });
 }
 
 // FROM: https://stackoverflow.com/a/28191966/5119024
@@ -76,12 +80,5 @@ serverTCP.on('connection', function(socket) {
     socket.end();
 });
 
-function checkAliveMusicians() {
-    musicians.forEach(element => {
-        
-        if(moment().diff(element.lastHeard, "milliseconds") > protocol.deathTimer) {
-            musicians.delete(element.uuid);
-        }
-
-    });
-}
+setInterval(checkMusicians, protocol.playTimer);
+setInterval(checkAliveMusicians, protocol.deathTimer);

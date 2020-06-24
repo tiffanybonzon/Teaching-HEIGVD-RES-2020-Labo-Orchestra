@@ -14,16 +14,6 @@ const uuidv4 = uuid.v4();
 // Creating a datagram socket
 const server = dgram.createSocket('udp4');
 
-
-console.log("Starting musician...")
-var instrument = process.argv[2];
-
-if(protocol.instruments[instrument]) {
-    setInterval(play, protocol.playTimer);
-} else {
-    console.log("Unknown instrument!")
-}
-
 function play() {
     var musician = {
         uuid: uuidv4,
@@ -36,4 +26,13 @@ function play() {
     server.send(message, protocol.udp_port, protocol.multicast_address, function() {
         console.log(payload);
     });
+}
+
+console.log("Starting musician...")
+var instrument = process.argv[2];
+
+if(protocol.instruments[instrument]) {
+    setInterval(play, protocol.playTimer);
+} else {
+    console.log("Unknown instrument!");
 }
