@@ -19,8 +19,6 @@ console.log("Starting musician...")
 var instrument = process.argv[2];
 
 if(protocol.instruments[instrument]) {
-
-//if(protocol.instruments2.has(instrument)) {
     setInterval(play, protocol.playTimer);
 } else {
     console.log("Unknown instrument!")
@@ -35,7 +33,7 @@ function play() {
     const payload = JSON.stringify(musician);
 
     message = new Buffer.from(payload);
-    server.send(message, protocol.port, protocol.multicast_address, function() {
+    server.send(message, protocol.udp_port, protocol.multicast_address, function() {
         console.log(payload);
     });
 }

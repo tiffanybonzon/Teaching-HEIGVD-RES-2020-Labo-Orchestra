@@ -1,5 +1,8 @@
-exports.port = 2205;
+exports.udp_port = 1524;
 exports.multicast_address = "239.255.22.5";
+
+exports.tcp_port = 2205;
+
 exports.playTimer = 1000;
 
 exports.instruments = new Map();
