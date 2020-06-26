@@ -20,7 +20,7 @@ serverUDP.bind(protocol.udp_port, function() {
 });
 
 
-// s.on dans une fonction car je sias pas comment timer sinon...
+// s.on dans une fonction car je sais pas comment timer sinon...
 function checkMusicians() {
     serverUDP.on('message', function(msg) {
         message = JSON.parse(msg);
@@ -28,14 +28,14 @@ function checkMusicians() {
     });
 }
 
+// If UUID already exists, update the lastHeard timestamp, create an entry otherwise
 function checkUUID(message) {
     var musician;
     
-    // If UUID already exists, update the lastHeard timestamp
     if(musicians.has(message.uuid)) {
         musician = musicians.get(message.uuid);
         musician.lastHeard = new Date();
-    } else { // Create an entry otherwise
+    } else {
         musician = {
             uuid: message.uuid,
             instrument: getKeyByValue(protocol.instruments, message.sound.toString()),
@@ -47,6 +47,7 @@ function checkUUID(message) {
     musicians.set(message.uuid, musician);
 }
 
+// Check if lastHeard was less than 5 seconds ago, removes the musician from the map otherwise
 function checkAliveMusicians() {
     musicians.forEach(element => {
         if(moment().diff(element.lastHeard, "milliseconds") > protocol.deathTimer) {
@@ -63,9 +64,10 @@ function getKeyByValue(object, value) {
 // let's create a TCP server
 var serverTCP = net.createServer();
 
-// we are ready, so let's ask the server to start listening on port 9907
+// we are ready, so let's ask the server to start listening on port 2205
 serverTCP.listen(protocol.tcp_port);
 
+// Listent for TCP connections
 serverTCP.on('connection', function(socket) {
     checkAliveMusicians();
     var msg = [];

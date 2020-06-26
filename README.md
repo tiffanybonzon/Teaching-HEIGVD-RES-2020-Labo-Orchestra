@@ -27,7 +27,7 @@ In this lab, you will **write 2 small NodeJS applications** and **package them i
 
 * the second app, **Auditor**, simulates someone who listens to the orchestra. This application has two responsibilities. Firstly, it must listen to Musicians and keep track of **active** musicians. A musician is active if it has played a sound during the last 5 seconds. Secondly, it must make this information available to you. Concretely, this means that it should implement a very simple TCP-based protocol.
 
-![image](images/joke.jpg)
+![image](./images/joke.jpg)
 
 
 ### Instruments and sounds
@@ -160,15 +160,15 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | ---  |
 |Question | With Node.js, how can we listen for UDP datagrams in a multicast group? |
-| | *Enter your response here...*  |
+| | By joining the group with `addMembership("group_address")` |
 |Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?  |
-| | *Enter your response here...* |
+| | We can use the UUID as the key and a musician object containing the UUID, the instrument, the timestamps of the first and last time the autitor heard him. We can then only update the lastHeard field using the UUID |
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?  |
-| | *Enter your response here...* |
+| | `Moment.js` allows us to easily take the difference between two timestamps |
 |Question | When and how do we **get rid of inactive players**?  |
-| | *Enter your response here...* |
+| | We get rid of inactive musicians every 5 seconds, and each time the host connects to the auditor on port TCP2205<br />We get rid of them be deleting the pair {UUID, Musician} from the musicians map. We remove them if the lastHeard timestamp was more than 5 seconds ago |
 |Question | How do I implement a **simple TCP server** in Node.js?  |
-| | *Enter your response here...* |
+| | The `net` module allows us to simply use `createServer()`, we can then `listen()` on a specific port |
 
 
 ## Task 5: package the "auditor" app in a Docker image
@@ -176,7 +176,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | --- |
 |Question | How do we validate that the whole system works, once we have built our Docker image? |
-| | *Enter your response here...* |
+| | We use the `validate` script provided with this labo (we have slightly modified it so that we could have our sources folder outside of our docker directories)<br />![](./images/tests.png) |
 
 
 ## Constraints
