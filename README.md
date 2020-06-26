@@ -104,7 +104,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | --- | --- |
 |Question | How can we represent the system in an **architecture diagram**, which gives information both about the Docker containers, the communication protocols and the commands? |
-| | *Insert your diagram here...* TODO |
+| | ![](images/diag.jpg)<br />Here is our diagram, we tried to keep it as simple as possible.<br />The first legend doesn't specify it but when the user connects to the auditor, the auditor will tell him the list of the active musicians (as JSON).<br />The `*` might be unclear, it means that every musician behaves the same way, but the message they send contains their UUID and the sound of their instrument. |
 |Question | Who is going to **send UDP datagrams** and **when**? |
 | | UDP datagrams are sent by the musicians, once every second as long as they're active. |
 |Question | Who is going to **listen for UDP datagrams** and what should happen when a datagram is received? |
