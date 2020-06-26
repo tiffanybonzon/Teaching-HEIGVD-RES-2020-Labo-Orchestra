@@ -112,7 +112,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | What **payload** should we put in the UDP datagrams? |
 | | The datagrams sent by the musicians will contain their UUID and the sound they emit. |
 |Question | What **data structures** do we need in the UDP sender and receiver? When will we update these data structures? When will we query these data structures? |
-| | We need to convert instruments to sounds and the opposite, for that we will use two maps, one musician-sided and one auditor-sided. Additionally we plan on creating a "Musician" object on the auditor side that will keep track of the UUID, the instrument and the first time he was heard. We will store the objects in an Array. |
+| | We need to convert instruments to sounds and the opposite, for that we will a map. Additionally we plan on creating a "Musician" object on the auditor side that will keep track of the UUID, the instrument, the first and the last time he was heard. We will store the objects in an map. |
 
 
 ## Task 2: implement a "musician" Node.js application
@@ -160,9 +160,9 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic |
 | ---  | ---  |
 |Question | With Node.js, how can we listen for UDP datagrams in a multicast group? |
-| | By joining the group with `addMembership("group_address")` |
+| | By joining the group with `addMembership("<group_address>")` |
 |Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?  |
-| | We can use the UUID as the key and a musician object containing the UUID, the instrument, the timestamps of the first and last time the autitor heard him. We can then only update the lastHeard field using the UUID |
+| | We can use the UUID as the key and a musician object (containing the UUID, the instrument, the timestamps of the first and last time the autitor heard him) as the value. We can then update only the lastHeard field using the UUID as needed |
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?  |
 | | `Moment.js` allows us to easily take the difference between two timestamps |
 |Question | When and how do we **get rid of inactive players**?  |
