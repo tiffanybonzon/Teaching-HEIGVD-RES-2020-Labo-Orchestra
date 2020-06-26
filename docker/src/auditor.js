@@ -10,7 +10,7 @@ var net = require('net');
 
 var moment = require('moment'); //Pour coparer les temps facilement
 
-var musicians = new Map(); // COntient les musiciens actifs
+var musicians = new Map(); // Contient les musiciens actifs
 
 // Creating a datagram socket
 const serverUDP = dgram.createSocket('udp4');
@@ -29,17 +29,20 @@ function checkMusicians() {
 }
 
 function checkUUID(message) {
-    //Surement qu'il serait mieux d'update lastHeard plutot que de tej et recréer à chaque fois...
+    var musician;
+    
+    // If UUID already exists, update the lastHeard timestamp
     if(musicians.has(message.uuid)) {
-        musicians.delete(message.uuid);
+        musician = musicians.get(message.uuid);
+        musician.lastHeard = new Date();
+    } else { // Create an entry otherwise
+        musician = {
+            uuid: message.uuid,
+            instrument: getKeyByValue(protocol.instruments, message.sound.toString()),
+            activeSince: new Date(),
+            lastHeard: new Date()
+        };
     }
-
-    var musician = {
-        uuid: message.uuid,
-        instrument: getKeyByValue(protocol.instruments, message.sound.toString()),
-        activeSince: new Date(),
-        lastHeard: new Date()
-    };
 
     musicians.set(message.uuid, musician);
 }
